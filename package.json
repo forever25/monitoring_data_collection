@@ -1,5 +1,5 @@
 {
-  "name": "vite-vanilla-ts-lib-starter",
+  "name": "monitoring_data_collection",
   "private": true,
   "version": "0.0.0",
   "main": "./dist/vite-ts-lib-starter.cjs",

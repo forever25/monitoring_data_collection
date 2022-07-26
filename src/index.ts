@@ -1,3 +1,2 @@
-import "./style.css";
-
-export { sum } from "./sum";
+import DataCollection from "./modules/DataCollection";
+window.DataCollection = DataCollection;
