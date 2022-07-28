@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "rootDir": "./src",
-    "target": "ESNext",
+    "target": "ES6",
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
@@ -17,7 +17,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["vite/client", "node", "jest"]
   },
-  "include": ["src"],
-  "exclude": ["**/*.test.ts", "node_modules", "test/**", ".history/**"],
-  "declaration": true
+  "include": ["src", "src/@types/types.d.ts"],
+  "exclude": ["**/*.test.ts", "node_modules", "test/**", ".history/**"]
 }
