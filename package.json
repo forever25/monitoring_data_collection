@@ -2,12 +2,12 @@
   "name": "monitoring_data_collection",
   "private": true,
   "version": "0.0.0",
-  "main": "./dist/vite-ts-lib-starter.cjs",
-  "module": "./dist/vite-ts-lib-starter.mjs",
+  "main": "./dist/monitoring_data_collection.cjs",
+  "module": "./dist/monitoring_data_collection.mjs",
   "exports": {
     ".": {
-      "require": "./dist/vite-ts-lib-starter.cjs",
-      "import": "./dist/vite-ts-lib-starter.mjs"
+      "require": "./dist/monitoring_data_collection.cjs",
+      "import": "./dist/monitoring_data_collection.mjs"
     }
   },
   "scripts": {
