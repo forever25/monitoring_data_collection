@@ -33,13 +33,17 @@ type DataType =
   | "domReady"
   | "firstRenderTime"
   | "firstInteractiveTime"
+  | "firstDataPackTime"
+  | "fullyLoadedTime"
   | "onLoadTime"
   | "promiseError"
   | "jsRuntimeError"
-  | "apiError"
+  | "httpError"
   | "resourceLoadingError"
   | "FCP"
   | "DCL"
   | "L"
   | "TTI"
   | "FP";
+
+type PerformanceTimingKeys = keyof typeof PerformanceTiming.prototype;

@@ -1,4 +1,9 @@
 import PromiseError from "./modules/PromiseError";
+import LoadTime from "./modules/LoadTime";
+import HttpError from "./modules/HttpError";
+import JSRuntimeError from "./modules/JSRuntimeError";
+import PagePerformance from "./modules/PagePerformance";
+import ResourceLoadingError from "./modules/ResourceLoadingError";
 class DataCollection {
   url: string;
   token: string;
@@ -13,8 +18,21 @@ class DataCollection {
     this.init(this.params);
   }
 
-  init(params: ModelProps) {
+  init(params: ModelProps): void {
     new PromiseError(params);
+    new LoadTime(params);
+    new HttpError(params);
+    new JSRuntimeError(params);
+    new PagePerformance(params);
+    new ResourceLoadingError(params);
+  }
+  /**
+   * @description: 注册模块
+   * @param {any} any
+   * @return {*}
+   */
+  registerModules(any: any): void {
+    // TODO 可以通过配置动态添加模块
   }
 }
 
