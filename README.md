@@ -13,7 +13,6 @@ The starter is built on top of Vite 2.x and prepared for writing libraries in Ty
 - Jest - test framework
 - Husky + lint-staged - pre-commit git hook set up for formatting
 
-
 ## Clone to local
 
 If you prefer to do it manually with the cleaner git history
