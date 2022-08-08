@@ -27,7 +27,7 @@ export default class BaseModel {
       // 否则都是没有初始化过的
       // 判断数据类型是否为数组
       if (this.arrayDataType.includes(type)) {
-        this.data = [data];
+        this.data[type] = [data];
       } else {
         this.data[type] = data;
       }
