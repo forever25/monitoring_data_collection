@@ -23,11 +23,6 @@
     "format": "npm run format:scripts && npm run format:styles",
     "prepare": "husky install && husky add .husky/pre-commit 'npx lint-staged' && git add .husky/pre-commit"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/jsdom": "^16.2.14",
