@@ -2,7 +2,7 @@ import BaseModel from "../app/BaseModel";
 import createErrorId from "../utils/createErrorId";
 
 // 页面加载时间指标
-export default class LoadTime extends BaseModel {
+export default class LoadTime {
   screenWidth: number;
   screenHeight: number;
   viewPointW: number;
@@ -10,8 +10,9 @@ export default class LoadTime extends BaseModel {
   performance: Performance;
   performanceTiming: PerformanceTiming;
   typeMap: Map<DataType, PerformanceTimingKeys[]>;
-  constructor(props: ModelProps) {
-    super(props);
+  baseModel: BaseModel;
+  constructor(props: BaseModel) {
+    this.baseModel = props;
     this.typeMap = new Map();
     this.screenWidth = window.screen.width;
     this.screenHeight = window.screen.height;
@@ -77,7 +78,6 @@ export default class LoadTime extends BaseModel {
         this.setData(key, timeConsumed);
       }
     );
-    this.sync(); // 测试同步功能
   }
   /**
    * @description: 页面性能
@@ -86,7 +86,7 @@ export default class LoadTime extends BaseModel {
    * @return {*}
    */
   setData(type: DataType, timeConsumed: number): void {
-    this.add(type, {
+    this.baseModel.add(type, {
       errorId: createErrorId(), // 错误id
       timeConsumed: timeConsumed, // 用时
       url: window.location.href, // url
@@ -99,5 +99,3 @@ export default class LoadTime extends BaseModel {
     });
   }
 }
-
-// this.sync(); // 测试同步功能

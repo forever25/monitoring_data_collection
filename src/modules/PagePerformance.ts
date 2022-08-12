@@ -2,7 +2,7 @@ import BaseModel from "../app/BaseModel";
 import createErrorId from "../utils/createErrorId";
 
 // 页面性能指标
-export default class PagePerformance extends BaseModel {
+export default class PagePerformance {
   screenWidth: number;
   screenHeight: number;
   viewPointW: number;
@@ -10,8 +10,9 @@ export default class PagePerformance extends BaseModel {
   performance: Performance;
   performanceTiming: PerformanceTiming;
   typeMap: Map<DataType, PerformanceTimingKeys[]>;
-  constructor(props: ModelProps) {
-    super(props);
+  baseModel: BaseModel;
+  constructor(props: BaseModel) {
+    this.baseModel = props;
     this.typeMap = new Map();
     this.screenWidth = window.screen.width;
     this.screenHeight = window.screen.height;
@@ -61,7 +62,7 @@ export default class PagePerformance extends BaseModel {
         this.setData(key, timeConsumed);
       }
     );
-    this.sync(); // 测试同步功能
+    this.setData("pv", 1); // 页面浏览量
   }
   /**
    * @description: 页面性能
@@ -70,7 +71,7 @@ export default class PagePerformance extends BaseModel {
    * @return {*}
    */
   setData(type: DataType, timeConsumed: number): void {
-    this.add(type, {
+    this.baseModel.add(type, {
       errorId: createErrorId(), // 错误id
       timeConsumed: timeConsumed, // 用时
       url: window.location.href, // url

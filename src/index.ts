@@ -1,37 +1,70 @@
 import PromiseError from "./modules/PromiseError";
 import LoadTime from "./modules/LoadTime";
-// import HttpError from "./modules/HttpError";
+import HttpError from "./modules/HttpError";
 import JSRuntimeError from "./modules/JSRuntimeError";
 import PagePerformance from "./modules/PagePerformance";
+import BaseModel from "./app/BaseModel";
 class DataCollection {
-  url: string;
-  token: string;
   params: ModelProps;
-  constructor(props: DataCollectionProps) {
-    this.token = props.token;
-    this.url = props.url;
+  baseModel: BaseModel;
+  include: moduleTypes[];
+  includeModules = {
+    HttpError: HttpError,
+    JSRuntimeError: JSRuntimeError,
+    LoadTime: LoadTime,
+    PagePerformance: PagePerformance,
+    PromiseError: PromiseError,
+  };
+  timer: NodeJS.Timeout;
+  reportFrequency: number;
+  constructor({
+    token,
+    url,
+    include = [
+      "HttpError",
+      "JSRuntimeError",
+      "LoadTime",
+      "PagePerformance",
+      "PromiseError",
+    ],
+    reportFrequency = 10000,
+  }: DataCollectionProps) {
     this.params = {
-      url: this.url,
-      token: this.token,
+      url: url,
+      token: token,
     };
-    this.init(this.params);
+    this.baseModel = new BaseModel(this.params);
+    this.include = include;
+    this.reportFrequency = reportFrequency;
+    this.registerModules(this.include);
+    this.setReportFrequency();
   }
 
-  init(params: ModelProps): void {
-    new PromiseError(params);
-    new LoadTime(params);
-    // new HttpError(params);
-    new JSRuntimeError(params);
-    new PagePerformance(params);
+  /**
+   * @description: 设置同步周期
+   * @return {*}
+   */
+  setReportFrequency() {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.baseModel.sync(true);
+      this.setReportFrequency();
+    }, this.reportFrequency);
   }
-  // /**
-  //  * @description: 注册模块
-  //  * @param {any} any
-  //  * @return {*}
-  //  */
-  // registerModules(any: any): void {
-  //   // TODO 可以通过配置动态添加模块
-  // }
+
+  /**
+   * @description: 注册模块
+   * @param {any} any
+   * @return {*}
+   */
+  registerModules(include: moduleTypes[]): void {
+    const keys = Object.keys(this.includeModules);
+    for (let i = 0; i < include.length; i++) {
+      if (keys.includes(include[i])) {
+        new this.includeModules[include[i]](this.baseModel);
+      }
+    }
+  }
 }
 
 window.DataCollection = DataCollection;

@@ -2,10 +2,10 @@ import HttpClient from "./HttpClient";
 
 export default class BaseModel {
   data: { [key: string]: any };
-  arrayDataType: string[] = [
+  arrayDataType: DataType[] = [
     "promiseError",
     "jsRuntimeError",
-    "apiError",
+    "httpError",
     "resourceLoadingError",
   ]; // 是数组类型数据
   token: string;
@@ -22,12 +22,14 @@ export default class BaseModel {
   add(type: DataType, data: any) {
     // 如果不等于undefined并且是数组 直接push
     if (this.data[type] !== undefined && Array.isArray(this.data[type])) {
-      this.data[type].push(data);
+      Array.isArray(data)
+        ? this.data[type].push(...data)
+        : this.data[type].push(data);
     } else {
       // 否则都是没有初始化过的
       // 判断数据类型是否为数组
       if (this.arrayDataType.includes(type)) {
-        this.data[type] = [data];
+        this.data[type] = Array.isArray(data) ? data : [data];
       } else {
         this.data[type] = data;
       }
@@ -37,12 +39,12 @@ export default class BaseModel {
    * @description: 同步数据并清空原数据
    * @return {Promise<boolean>}
    */
-  sync(): Promise<boolean> {
+  sync(async: boolean): Promise<boolean> {
     return new Promise((resolve) => {
       new HttpClient(
         {
-          url: this.token,
-          token: this.url,
+          url: this.url,
+          token: this.token,
           data: this.data,
         },
         (res) => {
@@ -53,7 +55,8 @@ export default class BaseModel {
             resolve(false);
             this.syncError();
           }
-        }
+        },
+        async
       );
     });
   }

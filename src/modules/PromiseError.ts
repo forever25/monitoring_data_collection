@@ -1,9 +1,10 @@
 import BaseModel from "../app/BaseModel";
 import createErrorId from "../utils/createErrorId";
 
-export default class PromiseError extends BaseModel {
-  constructor(props: ModelProps) {
-    super(props);
+export default class PromiseError {
+  baseModel: BaseModel;
+  constructor(props: BaseModel) {
+    this.baseModel = props;
     this.init();
   }
   /**
@@ -15,7 +16,7 @@ export default class PromiseError extends BaseModel {
       "unhandledrejection",
       (event) => {
         try {
-          this.add("promiseError", {
+          this.baseModel.add("promiseError", {
             title: document.title,
             errorId: createErrorId(),
             msg: event.reason,
@@ -28,7 +29,6 @@ export default class PromiseError extends BaseModel {
         } catch (error) {
           console.error(error);
         }
-        this.sync(); // 测试同步功能
       },
       true
     );

@@ -1,9 +1,10 @@
 import BaseModel from "../app/BaseModel";
 import createErrorId from "../utils/createErrorId";
 
-export default class JSRuntimeError extends BaseModel {
-  constructor(props: ModelProps) {
-    super(props);
+export default class JSRuntimeError {
+  baseModel: BaseModel;
+  constructor(props: BaseModel) {
+    this.baseModel = props;
     this.init();
   }
   /**
@@ -23,7 +24,6 @@ export default class JSRuntimeError extends BaseModel {
         } catch (error) {
           console.error(error);
         }
-        this.sync(); // 测试同步功能
       },
       true
     );
@@ -35,7 +35,7 @@ export default class JSRuntimeError extends BaseModel {
       return;
     }
 
-    this.add("resourceLoadingError", {
+    this.baseModel.add("resourceLoadingError", {
       title: document.title,
       errorId: createErrorId(),
       tagName: tagName, //加载失败的标签名
@@ -75,7 +75,7 @@ export default class JSRuntimeError extends BaseModel {
   }
 
   jsRuntimeError(event: ErrorEvent) {
-    this.add("jsRuntimeError", {
+    this.baseModel.add("jsRuntimeError", {
       title: document.title,
       errorId: createErrorId(),
       msg: event.message, //错误原因

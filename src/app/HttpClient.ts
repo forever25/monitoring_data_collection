@@ -2,14 +2,18 @@
 export default class HttpClient {
   private xhr: XMLHttpRequest;
   private body: string;
-  constructor(props: HttpClientProps, callbackfn: (data: any) => void) {
+  constructor(
+    props: HttpClientProps,
+    callbackfn: (data: any) => void,
+    asyncHttp = true
+  ) {
     try {
       this.body = JSON.stringify(props.data);
     } catch (error) {
       this.body = JSON.stringify({});
     }
     this.xhr = new XMLHttpRequest();
-    this.xhr.open("POST", props.url, true);
+    this.xhr.open("POST", props.url, asyncHttp);
     this.xhr.setRequestHeader("Content-Type", "application/json");
     this.xhr.setRequestHeader("token", props.token);
     this.xhr.onreadystatechange = () => {
@@ -21,6 +25,8 @@ export default class HttpClient {
           } catch (error) {
             callbackfn && callbackfn(null);
           }
+        } else {
+          callbackfn && callbackfn(null);
         }
       }
     };
