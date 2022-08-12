@@ -38,6 +38,10 @@ class DataCollection {
     this.reportFrequency = reportFrequency;
     this.registerModules(this.include);
     this.setReportFrequency();
+
+    window.addEventListener("beforeunload", () => {
+      this.baseModel.sync(false);
+    });
   }
 
   /**
