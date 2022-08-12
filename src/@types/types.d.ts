@@ -7,14 +7,23 @@ interface ModelProps {
 }
 
 interface DataCollectionProps {
-  url: string;
-  token: string;
+  url: string; // 上报url
+  token: string; // 项目token
+  reportFrequency: number; // 上报频率 毫秒
+  include: moduleTypes[];
 }
 interface HttpClientProps {
   url: string;
   token: string;
   data: { [key: string]: string };
 }
+
+type moduleTypes =
+  | "HttpError"
+  | "JSRuntimeError"
+  | "LoadTime"
+  | "PagePerformance"
+  | "PromiseError";
 
 type DataType =
   | "pv"
