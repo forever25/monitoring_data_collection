@@ -44,8 +44,6 @@ export default class HttpError {
     const self = this;
     const open = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (method: string, url: string) {
-      console.log(url, self.baseModel.url);
-
       if (url !== self.baseModel.url) {
         self.httpList.push({
           method,
