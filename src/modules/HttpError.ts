@@ -1,5 +1,4 @@
 import BaseModel from "../app/BaseModel";
-import createErrorId from "../utils/createErrorId";
 
 export default class HttpError {
   httpList: any[];
@@ -22,17 +21,18 @@ export default class HttpError {
 
     setInterval(() => {
       this.setData();
-    }, 1000);
+    }, 5000);
   }
   /**
    * @description: 设置同步数据
    * @return {*}
    */
   setData(): void {
-    this.baseModel.add(
-      "httpError",
-      this.httpList.filter((it) => it.status)
-    );
+    this.httpList.forEach((it) => {
+      if (it.status) {
+        this.baseModel.addHttpError(it);
+      }
+    });
 
     this.httpList = this.httpList.filter((it) => !it.status);
   }
@@ -44,15 +44,19 @@ export default class HttpError {
     const self = this;
     const open = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (method: string, url: string) {
-      if (url !== self.baseModel.url) {
-        self.httpList.push({
-          method,
-          type: "fetch",
-          url,
-          errorId: createErrorId(),
-          httpClient: this,
-          timeStamp: new Date().getTime(),
-          userAgent: navigator.userAgent,
+      try {
+        if (url !== self.baseModel.url) {
+          self.httpList.push({
+            method,
+            type: "fetch",
+            url,
+            httpClient: this,
+          });
+        }
+      } catch (error: any) {
+        self.baseModel.addAcquisitionError({
+          type: "XMLHttpRequest.open",
+          error,
         });
       }
       return open.call(this, method, url, true);
@@ -61,27 +65,33 @@ export default class HttpError {
     XMLHttpRequest.prototype.send = function (...rest: any[]) {
       const body = rest[0];
       this.addEventListener("readystatechange", function () {
-        if (this.readyState === 4) {
-          if (this.status >= 200 && this.status < 300) {
-            self.httpList = self.httpList.filter((it) => {
-              return it.httpClient !== this;
-            });
-          } else {
-            const errorClient = self.httpList.find((it) => {
-              return it.httpClient === this;
-            });
+        try {
+          if (this.readyState === 4) {
+            if (this.status >= 200 && this.status < 300) {
+              self.httpList = self.httpList.filter((it) => {
+                return it.httpClient !== this;
+              });
+            } else {
+              const errorClient = self.httpList.find((it) => {
+                return it.httpClient === this;
+              });
 
-            if (errorClient) {
-              errorClient.body = body;
-              errorClient.status = this.status;
-              errorClient.res = this.responseText;
+              if (errorClient) {
+                errorClient.body = body;
+                errorClient.status = this.status;
+                errorClient.res = this.responseText;
 
-              delete errorClient.httpClient;
+                delete errorClient.httpClient;
+              }
             }
           }
+        } catch (error: any) {
+          self.baseModel.addAcquisitionError({
+            type: "XMLHttpRequest 返回",
+            error,
+          });
         }
       });
-
       return send.call(this, body);
     };
   }
@@ -101,11 +111,18 @@ export default class HttpError {
             originFetch(url, options)
               .then((res) => {
                 if (res.status !== 200) {
-                  res.text().then((data) => {
-                    self.pushFetch(url, options, res, data);
-                  });
+                  resolve(res);
+                  try {
+                    res.text().then((data) => {
+                      self.pushFetch(url, options, res, data);
+                    });
+                  } catch (error: any) {
+                    self.baseModel.addAcquisitionError({
+                      type: "fetch接收请求",
+                      error,
+                    });
+                  }
                 }
-                resolve(res);
               })
               .catch((error) => {
                 reject(error);
@@ -129,11 +146,8 @@ export default class HttpError {
       method: options.method,
       body: options.body || options.params,
       url,
-      errorId: createErrorId(),
       res: data,
       status: res.status,
-      timeStamp: new Date().getTime(),
-      userAgent: navigator.userAgent,
     });
   }
 }

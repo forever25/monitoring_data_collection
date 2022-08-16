@@ -23,7 +23,7 @@ export default class LoadTime {
     this.init();
   }
   /**
-   * @description: Promise 错误捕获
+   * @description: 监听load 事件
    * @return {*}
    */
   init(): void {
@@ -36,13 +36,14 @@ export default class LoadTime {
       false
     );
   }
+
   /**
-   * @description: 初始化页面加载时间
+   * @description: 注册指标
    * @return {*}
    */
   initTypeMap(): void {
-    this.typeMap.set("dns", ["domainLookupEnd", "domainLookupStart"]);
-    this.typeMap.set("tcp", ["connectEnd", "connectStart"]);
+    this.typeMap.set("dns", ["domainLookupEnd", "domainLookupStart"]); // dns解析时长
+    this.typeMap.set("tcp", ["connectEnd", "connectStart"]); // tcp
     this.typeMap.set("ssl", ["connectEnd", "secureConnectionStart"]);
     this.typeMap.set("ttfb", ["responseStart", "requestStart"]);
     this.typeMap.set("unload", ["unloadEventEnd", "unloadEventStart"]);
@@ -73,19 +74,27 @@ export default class LoadTime {
     this.typeMap.set("TTI", ["domContentLoadedEventEnd", "navigationStart"]);
     this.typeMap.set("FP", ["responseStart", "navigationStart"]);
   }
+
   /**
-   * @description: 开始计算
+   * @description: 开始计算各项性能指标
    * @return {*}
    */
   startCalculating(): void {
-    this.typeMap.forEach(
-      (value: PerformanceTimingKeys[], key: DataType): void => {
-        const timeConsumed =
-          Number(this.performanceTiming[value[0]]) -
-          Number(this.performanceTiming[value[1]]);
-        this.setData(key, timeConsumed < 0 ? 0 : timeConsumed);
-      }
-    );
+    try {
+      this.typeMap.forEach(
+        (value: PerformanceTimingKeys[], key: DataType): void => {
+          const timeConsumed =
+            Number(this.performanceTiming[value[0]]) -
+            Number(this.performanceTiming[value[1]]);
+          this.setData(key, timeConsumed < 0 ? 0 : timeConsumed); // 判断指标数值是否小于0 如果小于0那么就等于0
+        }
+      );
+    } catch (error: any) {
+      this.baseModel.addAcquisitionError({
+        type: "页面性能计算",
+        error,
+      });
+    }
   }
   /**
    * @description: 页面性能

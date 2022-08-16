@@ -2,7 +2,6 @@ import PromiseError from "./modules/PromiseError";
 import LoadTime from "./modules/LoadTime";
 import HttpError from "./modules/HttpError";
 import JSRuntimeError from "./modules/JSRuntimeError";
-import PagePerformance from "./modules/PagePerformance";
 import BaseModel from "./app/BaseModel";
 class DataCollection {
   params: ModelProps;
@@ -12,7 +11,6 @@ class DataCollection {
     HttpError: HttpError,
     JSRuntimeError: JSRuntimeError,
     LoadTime: LoadTime,
-    PagePerformance: PagePerformance,
     PromiseError: PromiseError,
   };
   timer: NodeJS.Timeout;
@@ -20,13 +18,7 @@ class DataCollection {
   constructor({
     token,
     url,
-    include = [
-      "HttpError",
-      "JSRuntimeError",
-      "LoadTime",
-      "PagePerformance",
-      "PromiseError",
-    ],
+    include = ["HttpError", "JSRuntimeError", "LoadTime", "PromiseError"],
     reportFrequency = 10000,
   }: DataCollectionProps) {
     this.params = {

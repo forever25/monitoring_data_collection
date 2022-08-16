@@ -26,8 +26,11 @@ export default class PromiseError {
             userAgent: navigator.userAgent,
           });
           event.preventDefault();
-        } catch (error) {
-          console.error(error);
+        } catch (error: any) {
+          this.baseModel.addAcquisitionError({
+            type: "捕获promise错误",
+            error,
+          });
         }
       },
       true

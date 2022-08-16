@@ -21,8 +21,11 @@ export default class JSRuntimeError {
           } else {
             this.resourceLoadingError(event);
           }
-        } catch (error) {
-          console.error(error);
+        } catch (error: any) {
+          this.baseModel.addAcquisitionError({
+            type: "监听error事件",
+            error,
+          });
         }
       },
       true
@@ -75,18 +78,13 @@ export default class JSRuntimeError {
   }
 
   jsRuntimeError(event: ErrorEvent) {
-    this.baseModel.add("jsRuntimeError", {
-      title: document.title,
-      errorId: createErrorId(),
+    this.baseModel.addJsRuntimeError({
       msg: event.message, //错误原因
       type: event.type,
       line: event.lineno, //错误行号
       clo: event.colno, //错误列号
       error: event.error.error, //错误堆栈
-      url: window.location.href,
       fileName: event.filename, //文件路径
-      timeStamp: new Date().getTime(),
-      userAgent: navigator.userAgent,
     });
   }
 }

@@ -18,13 +18,7 @@ interface HttpClientProps {
   data: { [key: string]: string };
 }
 
-type moduleTypes =
-  | "HttpError"
-  | "JSRuntimeError"
-  | "LoadTime"
-  | "PagePerformance"
-  | "PromiseError"
-  | "pv";
+type moduleTypes = "HttpError" | "JSRuntimeError" | "LoadTime" | "PromiseError";
 
 type DataType =
   | "retentionTime"
@@ -49,6 +43,8 @@ type DataType =
   | "jsRuntimeError"
   | "httpError"
   | "resourceLoadingError"
+  | "pv"
+  | "acquisitionError"
   | "FCP"
   | "DCL"
   | "L"
