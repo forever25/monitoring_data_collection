@@ -23,10 +23,10 @@ type moduleTypes =
   | "JSRuntimeError"
   | "LoadTime"
   | "PagePerformance"
-  | "PromiseError";
+  | "PromiseError"
+  | "pv";
 
 type DataType =
-  | "pv"
   | "retentionTime"
   | "unload"
   | "redirect"

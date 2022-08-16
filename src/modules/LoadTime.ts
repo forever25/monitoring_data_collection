@@ -64,6 +64,14 @@ export default class LoadTime {
       "domainLookupStart",
     ]);
     this.typeMap.set("fullyLoadedTime", ["responseStart", "domainLookupStart"]);
+    this.typeMap.set("FCP", ["loadEventEnd", "navigationStart"]);
+    this.typeMap.set("DCL", [
+      "domContentLoadedEventEnd",
+      "domContentLoadedEventStart",
+    ]);
+    this.typeMap.set("L", ["loadEventStart", "fetchStart"]);
+    this.typeMap.set("TTI", ["domContentLoadedEventEnd", "navigationStart"]);
+    this.typeMap.set("FP", ["responseStart", "navigationStart"]);
   }
   /**
    * @description: 开始计算
@@ -75,7 +83,7 @@ export default class LoadTime {
         const timeConsumed =
           Number(this.performanceTiming[value[0]]) -
           Number(this.performanceTiming[value[1]]);
-        this.setData(key, timeConsumed);
+        this.setData(key, timeConsumed < 0 ? 0 : timeConsumed);
       }
     );
   }
