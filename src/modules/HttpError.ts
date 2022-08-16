@@ -47,10 +47,12 @@ export default class HttpError {
       if (url !== self.baseModel.url) {
         self.httpList.push({
           method,
+          type: "fetch",
           url,
-          createErrorId: createErrorId(),
+          errorId: createErrorId(),
           httpClient: this,
           timeStamp: new Date().getTime(),
+          userAgent: navigator.userAgent,
         });
       }
       return open.call(this, method, url, true);
@@ -123,13 +125,15 @@ export default class HttpError {
   pushFetch(url: string, options: any = {}, res: Response, data?: any): void {
     if (url === this.baseModel.url) return;
     this.httpList.push({
+      type: "fetch",
       method: options.method,
       body: options.body || options.params,
       url,
-      createErrorId: createErrorId(),
+      errorId: createErrorId(),
       res: data,
       status: res.status,
       timeStamp: new Date().getTime(),
+      userAgent: navigator.userAgent,
     });
   }
 }

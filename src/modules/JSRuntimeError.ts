@@ -82,10 +82,9 @@ export default class JSRuntimeError {
       type: event.type,
       line: event.lineno, //错误行号
       clo: event.colno, //错误列号
-      tarck: event.error.tarck, //错误堆栈
       error: event.error.error, //错误堆栈
       url: window.location.href,
-      filename: event.filename, //文件路径
+      fileName: event.filename, //文件路径
       timeStamp: new Date().getTime(),
       userAgent: navigator.userAgent,
     });

@@ -62,7 +62,6 @@ export default class PagePerformance {
         this.setData(key, timeConsumed);
       }
     );
-    this.setData("pv", 1); // 页面浏览量
   }
   /**
    * @description: 页面性能
