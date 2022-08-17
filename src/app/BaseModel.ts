@@ -1,5 +1,4 @@
 import HttpClient from "./HttpClient";
-import createErrorId from "../utils/createErrorId";
 
 export default class BaseModel {
   data: { [key: string]: any };
@@ -39,73 +38,6 @@ export default class BaseModel {
       }
     }
   }
-  /**
-   * @description: 添加 采集错误
-   * @param {*} type
-   * @param {*} error
-   * @return {*}
-   */
-  addAcquisitionError({ type = "", error = { message: "", stack: "" } }): void {
-    this.add("acquisitionError", {
-      errorId: createErrorId(),
-      type,
-      msg: error.message,
-      stack: error.stack,
-      url: this.pageUrl, // url
-      userAgent: this.userAgent,
-      timeStamp: new Date().getTime(),
-    });
-  }
-  /**
-   * @description: 添加httpError
-   * @return {*}
-   */
-  addHttpError({
-    method = "GET",
-    url = "",
-    type = "",
-    body = "",
-    status = 0,
-    res = "",
-  }): void {
-    this.add("httpError", {
-      errorId: createErrorId(),
-      method,
-      url,
-      type,
-      body,
-      status,
-      res,
-      timeStamp: new Date().getTime(),
-      userAgent: navigator.userAgent,
-    });
-  }
-  /**
-   * @description: 添加js运行时错误
-   * @return {*}
-   */
-  addJsRuntimeError({
-    msg = "",
-    type = "",
-    line = 0,
-    clo = 0,
-    error = "",
-    fileName = "",
-  }): void {
-    this.add("jsRuntimeError", {
-      title: document.title,
-      errorId: createErrorId(),
-      msg, //错误原因
-      type,
-      line, //错误行号
-      clo, //错误列号
-      error, //错误堆栈
-      url: this.pageUrl,
-      fileName, //文件路径
-      timeStamp: new Date().getTime(),
-      userAgent: this.userAgent,
-    });
-  }
 
   /**
    * @description: 同步数据并清空原数据
@@ -136,14 +68,14 @@ export default class BaseModel {
    * @description: 成功调用方法
    * @return {*}
    */
-  syncSuccess() {
+  syncSuccess(): void {
     this.data = {};
   }
   /**
    * @description: 失败调用方法
    * @return {*}
    */
-  syncError() {
+  syncError(): void {
     console.log("数据同步失败");
   }
 }

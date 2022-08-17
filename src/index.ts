@@ -2,10 +2,10 @@ import PromiseError from "./modules/PromiseError";
 import LoadTime from "./modules/LoadTime";
 import HttpError from "./modules/HttpError";
 import JSRuntimeError from "./modules/JSRuntimeError";
-import BaseModel from "./app/BaseModel";
+import TypeModel from "./app/TypeModel";
 class DataCollection {
   params: ModelProps;
-  baseModel: BaseModel;
+  typeModel: TypeModel;
   include: moduleTypes[];
   includeModules = {
     HttpError: HttpError,
@@ -25,14 +25,14 @@ class DataCollection {
       url: url,
       token: token,
     };
-    this.baseModel = new BaseModel(this.params);
+    this.typeModel = new TypeModel(this.params);
     this.include = include;
     this.reportFrequency = reportFrequency;
     this.registerModules(this.include);
     this.setReportFrequency();
 
     window.addEventListener("beforeunload", () => {
-      this.baseModel.sync(false);
+      this.typeModel.sync(false);
     });
   }
 
@@ -43,7 +43,7 @@ class DataCollection {
   setReportFrequency() {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
-      this.baseModel.sync(true);
+      this.typeModel.sync(true);
       this.setReportFrequency();
     }, this.reportFrequency);
   }
@@ -57,7 +57,7 @@ class DataCollection {
     const keys = Object.keys(this.includeModules);
     for (let i = 0; i < include.length; i++) {
       if (keys.includes(include[i])) {
-        new this.includeModules[include[i]](this.baseModel);
+        new this.includeModules[include[i]](this.typeModel);
       }
     }
   }

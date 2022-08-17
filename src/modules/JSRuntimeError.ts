@@ -1,14 +1,13 @@
-import BaseModel from "../app/BaseModel";
-import createErrorId from "../utils/createErrorId";
+import TypeModel from "../app/TypeModel";
 
 export default class JSRuntimeError {
-  baseModel: BaseModel;
-  constructor(props: BaseModel) {
-    this.baseModel = props;
+  typeModel: TypeModel;
+  constructor(typeModel: TypeModel) {
+    this.typeModel = typeModel;
     this.init();
   }
   /**
-   * @description: js 运行时 错误捕获
+   * @description: 监听error事件
    * @return {*}
    */
   init(): void {
@@ -22,7 +21,7 @@ export default class JSRuntimeError {
             this.resourceLoadingError(event);
           }
         } catch (error: any) {
-          this.baseModel.addAcquisitionError({
+          this.typeModel.addAcquisitionError({
             type: "监听error事件",
             error,
           });
@@ -31,6 +30,11 @@ export default class JSRuntimeError {
       true
     );
   }
+  /**
+   * @description: 资源加载错误
+   * @param {ErrorEvent} event
+   * @return {*}
+   */
   resourceLoadingError(event: ErrorEvent) {
     const { tagName, fileName } = this.getFileName(event);
     // tagName 和 fileName 不存在那么就返回
@@ -38,18 +42,18 @@ export default class JSRuntimeError {
       return;
     }
 
-    this.baseModel.add("resourceLoadingError", {
-      title: document.title,
-      errorId: createErrorId(),
+    this.typeModel.arrResourceLoadingError({
       tagName: tagName, //加载失败的标签名
       fileName, //加载失败的资源路径
       type: event.type,
-      url: window.location.href,
-      timeStamp: new Date().getTime(),
-      userAgent: navigator.userAgent,
     });
   }
 
+  /**
+   * @description: 获取文件名
+   * @param {ErrorEvent} event
+   * @return {*}
+   */
   getFileName(event: ErrorEvent) {
     const target = <Element>event.target;
     const tagName = target.tagName;
@@ -77,8 +81,13 @@ export default class JSRuntimeError {
     return { fileName, tagName };
   }
 
+  /**
+   * @description: js 运行时错误
+   * @param {ErrorEvent} event
+   * @return {*}
+   */
   jsRuntimeError(event: ErrorEvent) {
-    this.baseModel.addJsRuntimeError({
+    this.typeModel.addJsRuntimeError({
       msg: event.message, //错误原因
       type: event.type,
       line: event.lineno, //错误行号

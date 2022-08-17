@@ -1,10 +1,10 @@
-import BaseModel from "../app/BaseModel";
+import TypeModel from "../app/TypeModel";
 
 export default class HttpError {
   httpList: any[];
-  baseModel: BaseModel;
-  constructor(props: BaseModel) {
-    this.baseModel = props;
+  typeModel: TypeModel;
+  constructor(props: TypeModel) {
+    this.typeModel = props;
     this.httpList = [];
     this.init();
   }
@@ -30,7 +30,7 @@ export default class HttpError {
   setData(): void {
     this.httpList.forEach((it) => {
       if (it.status) {
-        this.baseModel.addHttpError(it);
+        this.typeModel.addHttpError(it);
       }
     });
 
@@ -45,16 +45,16 @@ export default class HttpError {
     const open = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (method: string, url: string) {
       try {
-        if (url !== self.baseModel.url) {
+        if (url !== self.typeModel.url) {
           self.httpList.push({
             method,
-            type: "fetch",
+            type: "XMLHttpRequest",
             url,
             httpClient: this,
           });
         }
       } catch (error: any) {
-        self.baseModel.addAcquisitionError({
+        self.typeModel.addAcquisitionError({
           type: "XMLHttpRequest.open",
           error,
         });
@@ -86,7 +86,7 @@ export default class HttpError {
             }
           }
         } catch (error: any) {
-          self.baseModel.addAcquisitionError({
+          self.typeModel.addAcquisitionError({
             type: "XMLHttpRequest 返回",
             error,
           });
@@ -117,7 +117,7 @@ export default class HttpError {
                       self.pushFetch(url, options, res, data);
                     });
                   } catch (error: any) {
-                    self.baseModel.addAcquisitionError({
+                    self.typeModel.addAcquisitionError({
                       type: "fetch接收请求",
                       error,
                     });
@@ -140,7 +140,7 @@ export default class HttpError {
    * @return {*}
    */
   pushFetch(url: string, options: any = {}, res: Response, data?: any): void {
-    if (url === this.baseModel.url) return;
+    if (url === this.typeModel.url) return;
     this.httpList.push({
       type: "fetch",
       method: options.method,

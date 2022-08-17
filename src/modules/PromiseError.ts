@@ -1,10 +1,10 @@
-import BaseModel from "../app/BaseModel";
+import TypeModel from "../app/TypeModel";
 import createErrorId from "../utils/createErrorId";
 
 export default class PromiseError {
-  baseModel: BaseModel;
-  constructor(props: BaseModel) {
-    this.baseModel = props;
+  typeModel: TypeModel;
+  constructor(props: TypeModel) {
+    this.typeModel = props;
     this.init();
   }
   /**
@@ -16,7 +16,7 @@ export default class PromiseError {
       "unhandledrejection",
       (event) => {
         try {
-          this.baseModel.add("promiseError", {
+          this.typeModel.add("promiseError", {
             title: document.title,
             errorId: createErrorId(),
             msg: event.reason,
@@ -27,7 +27,7 @@ export default class PromiseError {
           });
           event.preventDefault();
         } catch (error: any) {
-          this.baseModel.addAcquisitionError({
+          this.typeModel.addAcquisitionError({
             type: "捕获promise错误",
             error,
           });

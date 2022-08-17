@@ -1,4 +1,4 @@
-import BaseModel from "../app/BaseModel";
+import TypeModel from "../app/TypeModel";
 import createErrorId from "../utils/createErrorId";
 
 // 页面加载时间指标
@@ -10,9 +10,9 @@ export default class LoadTime {
   performance: Performance;
   performanceTiming: PerformanceTiming;
   typeMap: Map<DataType, PerformanceTimingKeys[]>;
-  baseModel: BaseModel;
-  constructor(props: BaseModel) {
-    this.baseModel = props;
+  typeModel: TypeModel;
+  constructor(props: TypeModel) {
+    this.typeModel = props;
     this.typeMap = new Map();
     this.screenWidth = window.screen.width;
     this.screenHeight = window.screen.height;
@@ -90,7 +90,7 @@ export default class LoadTime {
         }
       );
     } catch (error: any) {
-      this.baseModel.addAcquisitionError({
+      this.typeModel.addAcquisitionError({
         type: "页面性能计算",
         error,
       });
@@ -103,7 +103,7 @@ export default class LoadTime {
    * @return {*}
    */
   setData(type: DataType, timeConsumed: number): void {
-    this.baseModel.add(type, {
+    this.typeModel.add(type, {
       errorId: createErrorId(), // 错误id
       timeConsumed: timeConsumed, // 用时
       url: window.location.href, // url
