@@ -52,3 +52,7 @@ type DataType =
   | "FP";
 
 type PerformanceTimingKeys = keyof typeof PerformanceTiming.prototype;
+
+type ReportData = { [key: string]: any };
+
+type historyKey = keyof typeof History.prototype;
